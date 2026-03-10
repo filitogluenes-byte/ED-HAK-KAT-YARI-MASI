@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VIP Versus | Kim Daha Üstün?</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <header>
+            <h1 class="glow-text">VIP VERSUS</h1>
+            <div class="aura-line"></div>
+        </header>
+
+        <main id="main-content">
+            <div class="input-card">
+                <input type="text" id="user1" placeholder="1. İsim" autocomplete="off">
+                <div class="vs-circle">VS</div>
+                <input type="text" id="user2" placeholder="2. İsim" autocomplete="off">
+            </div>
+
+            <button id="analyze-btn">ANALİZİ BAŞLAT</button>
+        </main>
+
+        <div id="loading" class="hidden">
+            <div class="radar"></div>
+            <p class="loading-text">KARİZMA TARANIYOR...</p>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <div class="winner-card">
+                <p class="winner-label">KAZANAN VIP</p>
+                <h2 id="winner-name"></h2>
+                <div class="stats-grid" id="stats-box"></div>
+                <button onclick="location.reload()" class="retry-btn">TEKRAR KAPIŞ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
