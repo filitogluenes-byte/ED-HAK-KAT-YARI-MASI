@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP DATA ACCESS</title>
+    <title>ED DEVA | SYSTEM ACCESS</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="start-screen">
-        <div class="logo">ED DEVA SYSTEM</div>
-        <button id="initiate-btn">SİSTEMİ BAŞLAT</button>
-        <p>Veri sızıntılarını kontrol etmek için dokunun.</p>
+        <div class="logo" style="border: 2px solid #fff; padding: 20px; color: #fff; font-family: sans-serif; margin-bottom: 20px;">ED DEVA SYSTEM</div>
+        <button id="initiate-btn" style="padding: 15px 30px; background: transparent; border: 1px solid #0f0; color: #0f0; font-family: monospace; cursor: pointer;">SİSTEMİ BAŞLAT</button>
+        <p style="color: #666; font-family: monospace; margin-top: 10px;">Güvenlik sızıntılarını kontrol etmek için basın.</p>
     </div>
 
     <div id="hack-screen" class="hidden">
         <canvas id="matrix-canvas"></canvas>
-        <div class="terminal-text">
+        <div class="terminal-text" style="position: absolute; top: 10%; left: 10%; color: #0f0; font-family: monospace;">
             <p id="line1"></p>
             <p id="line2"></p>
             <p id="line3"></p>
-            <p id="line4" class="warning"></p>
+            <p id="line4"></p>
         </div>
         <div class="system-alert hidden" id="final-alert">
             CRITICAL ERROR: SYSTEM COMPROMISED
