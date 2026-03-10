@@ -1,120 +1,51 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$@#%";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0f0";
+    ctx.font = fontSize + "px arial";
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    }
 }
 
-body {
-    background-color: #0a0a0a;
-    color: #fff;
-    font-family: 'Orbitron', sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-}
+document.getElementById('initiate-btn').addEventListener('click', function() {
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('hack-screen').classList.remove('hidden');
+    
+    setInterval(drawMatrix, 33);
+    runScaryText();
+});
 
-.app-wrapper {
-    width: 100%;
-    max-width: 500px;
-    padding: 40px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-}
+function runScaryText() {
+    const lines = [
+        { id: 'line1', text: "> Yerel ağa sızılıyor...", delay: 500 },
+        { id: 'line2', text: "> IP adresi tespit edildi: 192.168.1.1", delay: 1500 },
+        { id: 'line3', text: "> Fotoğraf galerisine erişim sağlandı...", delay: 3000 },
+        { id: 'line4', text: "> TÜM VERİLER DIŞARI AKTARILIYOR!", delay: 5000 }
+    ];
 
-.glow-text {
-    font-size: 2rem;
-    color: #ffd700;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-    letter-spacing: 4px;
-}
+    lines.forEach(line => {
+        setTimeout(() => {
+            document.getElementById(line.id).innerText = line.text;
+        }, line.delay);
+    });
 
-.aura-line {
-    width: 60px;
-    height: 3px;
-    background: #ffd700;
-    margin: 10px auto;
-    box-shadow: 0 0 10px #ffd700;
+    setTimeout(() => {
+        document.getElementById('final-alert').classList.remove('hidden');
+    }, 7000);
 }
-
-.input-card {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 30px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 215, 0, 0.1);
-    backdrop-filter: blur(10px);
-}
-
-input {
-    width: 100%;
-    padding: 18px;
-    background: #151515;
-    border: 1px solid #333;
-    border-radius: 12px;
-    color: #ffd700;
-    font-size: 1.1rem;
-    text-align: center;
-    font-family: 'Orbitron';
-}
-
-.vs-circle {
-    width: 50px;
-    height: 50px;
-    background: #ff3e3e;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 15px auto;
-    font-weight: bold;
-    box-shadow: 0 0 20px rgba(255, 62, 62, 0.4);
-}
-
-#analyze-btn {
-    width: 100%;
-    padding: 20px;
-    background: linear-gradient(45deg, #ffd700, #ff8c00);
-    border: none;
-    border-radius: 15px;
-    color: #000;
-    font-weight: 900;
-    font-size: 1.2rem;
-    margin-top: 30px;
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-}
-
-/* Radar Efekti */
-.radar {
-    width: 150px;
-    height: 150px;
-    border: 2px solid #ffd700;
-    border-radius: 50%;
-    position: relative;
-    margin: 50px auto;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.8); opacity: 1; }
-    100% { transform: scale(1.2); opacity: 0; }
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.stat-item {
-    background: #1a1a1a;
-    padding: 15px;
-    border-radius: 10px;
-    border-bottom: 2px solid #ffd700;
-}
-
-.hidden { display: none !important; }
