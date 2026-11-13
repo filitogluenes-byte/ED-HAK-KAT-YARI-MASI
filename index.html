@@ -1,32 +1,1702 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ED DEVA | SYSTEM ACCESS</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Ziraat Mobil | Enes Deva</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome İkonları -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        ziraat: {
+                            red: '#E30613',
+                            dark: '#B5050F',
+                            darker: '#7A0209',
+                            light: '#FFF1F2',
+                            charcoal: '#1C1E21',
+                            gold: '#D4AF37',
+                        }
+                    },
+                    boxShadow: {
+                        'device': '0 30px 70px -15px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08)',
+                        'card-red': '0 14px 30px -8px rgba(227, 6, 19, 0.4)',
+                        'card-gold': '0 14px 30px -8px rgba(180, 130, 20, 0.4)',
+                        'card-dark': '0 14px 30px -8px rgba(28, 30, 33, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Kaydırma çubuklarını gizle */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 3D Kart Çevirme Animasyonu */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1); }
+        .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+
+        /* Modal & Panel Animasyonları */
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0.4; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in { animation: fadeIn 0.22s ease-out forwards; }
+
+        /* Ziraat Başak Nokta Deseni */
+        .wheat-dots {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+            background-size: 14px 14px;
+        }
+
+        /* Dekont Yazdırma / İndirme Görünümü */
+        @media print {
+            body * { visibility: hidden; }
+            #printable-receipt-area, #printable-receipt-area * { visibility: visible; }
+            #printable-receipt-area { position: fixed; left: 0; top: 0; width: 100%; background: white; padding: 20px; }
+        }
+    </style>
 </head>
-<body>
+<body class="bg-[#121417] min-h-screen flex items-center justify-center sm:p-4 md:p-6 antialiased selection:bg-ziraat-red selection:text-white overflow-x-hidden">
 
-    <div id="start-screen">
-        <div class="logo" style="border: 2px solid #fff; padding: 20px; color: #fff; font-family: sans-serif; margin-bottom: 20px;">ED DEVA SYSTEM</div>
-        <button id="initiate-btn" style="padding: 15px 30px; background: transparent; border: 1px solid #0f0; color: #0f0; font-family: monospace; cursor: pointer;">SİSTEMİ BAŞLAT</button>
-        <p style="color: #666; font-family: monospace; margin-top: 10px;">Güvenlik sızıntılarını kontrol etmek için basın.</p>
+    <!-- Bildirim Toast Alanı -->
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 w-[90%] max-w-[360px] pointer-events-none"></div>
+
+    <!-- GERÇEKÇİ MOBİL CİHAZ ÇERÇEVESİ (Mobilde tam ekran, masaüstünde telefon çerçevesi) -->
+    <div class="relative w-full sm:w-[405px] h-[100dvh] sm:h-[835px] bg-[#1C1E21] sm:rounded-[52px] sm:p-[13px] shadow-device sm:border-[3px] sm:border-neutral-700/80 flex flex-col select-none overflow-hidden">
+        
+        <!-- Masaüstü Yan Tuş Detayları -->
+        <div class="hidden sm:block absolute -left-[5px] top-28 w-[3px] h-9 bg-neutral-600 rounded-l"></div>
+        <div class="hidden sm:block absolute -left-[5px] top-44 w-[3px] h-14 bg-neutral-600 rounded-l"></div>
+        <div class="hidden sm:block absolute -left-[5px] top-60 w-[3px] h-14 bg-neutral-600 rounded-l"></div>
+        <div class="hidden sm:block absolute -right-[5px] top-44 w-[3px] h-20 bg-neutral-600 rounded-r"></div>
+
+        <!-- TELEFON EKRANI -->
+        <div class="relative w-full h-full bg-[#F3F5F8] sm:rounded-[40px] overflow-hidden flex flex-col">
+
+            <!-- ÜST DURUM ÇUBUĞU (Status Bar) -->
+            <div class="bg-ziraat-red text-white px-6 pt-2.5 pb-1.5 flex items-center justify-between text-[11px] font-semibold z-30 shrink-0">
+                <span id="live-clock">23:08</span>
+                <div class="hidden sm:flex w-24 h-5 bg-black rounded-full items-center justify-end px-2">
+                    <span class="w-2 h-2 rounded-full bg-neutral-800 border border-neutral-700"></span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-signal text-[10px]"></i>
+                    <i class="fa-solid fa-wifi text-[10px]"></i>
+                    <i class="fa-solid fa-battery-full text-xs"></i>
+                </div>
+            </div>
+
+            <!-- UYGULAMA ÜST BAR (Header) -->
+            <header class="bg-ziraat-red text-white px-5 pt-2 pb-5 rounded-b-[28px] shadow-md z-20 shrink-0 wheat-dots">
+                <div class="flex items-center justify-between">
+                    <!-- Kullanıcı Profil Özeti -->
+                    <button type="button" onclick="switchTab('profil')" class="flex items-center gap-3 text-left group cursor-pointer">
+                        <div class="relative">
+                            <div id="header-avatar" class="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center font-display font-extrabold text-base tracking-wide text-white group-hover:scale-105 transition-transform">
+                                ED
+                            </div>
+                            <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-ziraat-red rounded-full"></span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] uppercase tracking-wider text-white/80 font-semibold">Ziraat Mobil</span>
+                                <i class="fa-solid fa-wheat-awn text-[10px] text-amber-300"></i>
+                            </div>
+                            <h1 id="header-username" class="font-display font-bold text-base leading-tight tracking-tight">Enes Deva</h1>
+                            <p id="header-branch" class="text-[10px] text-white/75 truncate max-w-[175px]">Dörtyol / Hatay Şubesi</p>
+                        </div>
+                    </button>
+
+                    <!-- Sağ Aksiyon İkonları (Bildirimler & Düzenleme Stüdyosu) -->
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="openNotifications()" class="relative w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors cursor-pointer" title="Bildirimler">
+                            <i class="fa-regular fa-bell text-sm"></i>
+                            <span id="notif-badge" class="absolute top-2 right-2.5 w-2 h-2 rounded-full bg-amber-300"></span>
+                        </button>
+                        <button type="button" onclick="switchTab('profil')" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors cursor-pointer" title="Ayarlar ve Özelleştirme">
+                            <i class="fa-solid fa-sliders text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ANA KAYDIRILABİLİR İÇERİK ALANI -->
+            <main id="app-scroll-container" class="flex-1 overflow-y-auto no-scrollbar px-4 pt-4 pb-24 space-y-5">
+
+                <!-- ==================== 1. SEKME: ANA SAYFA (HESAPLARIM) ==================== -->
+                <section id="view-anasayfa" class="space-y-5 animate-fade-in">
+
+                    <!-- Hesap Türü Seçici Haplar (TL / Altın / USD) -->
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex bg-slate-200/90 p-1 rounded-xl text-[11px] font-bold">
+                            <button type="button" id="pill-tl" onclick="selectAccountCard('tl')" class="px-3 py-1.5 rounded-lg bg-white text-ziraat-red shadow-xs transition-all cursor-pointer">
+                                Vadesiz TL
+                            </button>
+                            <button type="button" id="pill-gold" onclick="selectAccountCard('gold')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all cursor-pointer">
+                                Altın (XAU)
+                            </button>
+                            <button type="button" id="pill-usd" onclick="selectAccountCard('usd')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all cursor-pointer">
+                                USD ($)
+                            </button>
+                        </div>
+
+                        <button type="button" onclick="toggleBalanceVisibility()" class="w-8 h-8 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-ziraat-red flex items-center justify-center shadow-2xs cursor-pointer" title="Bakiyeyi Gizle/Göster">
+                            <i id="global-eye-icon" class="fa-regular fa-eye text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- AKTİF HESAP KARTI (Dinamik İçerik) -->
+                    <div id="active-account-card" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 relative overflow-hidden transition-all">
+                        <!-- JS tarafından doldurulacak -->
+                    </div>
+
+                    <!-- HIZLI İŞLEMLER (Gerçek Çalışan Ekranlara Gider) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2.5 px-0.5">
+                            <h2 class="text-xs font-bold text-slate-800">Hızlı İşlemler</h2>
+                            <span class="text-[10px] text-slate-400">7/24 Kesintisiz</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" onclick="openTransferScreen()" class="bg-white hover:bg-ziraat-light/60 active:scale-95 p-2.5 rounded-2xl border border-slate-200/80 flex flex-col items-center gap-1.5 transition-all group cursor-pointer shadow-2xs">
+                                <div class="w-10 h-10 rounded-xl bg-ziraat-light text-ziraat-red group-hover:bg-ziraat-red group-hover:text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-slate-700 text-center leading-tight">FAST / Havale</span>
+                            </button>
+
+                            <button type="button" onclick="openQrModal()" class="bg-white hover:bg-ziraat-light/60 active:scale-95 p-2.5 rounded-2xl border border-slate-200/80 flex flex-col items-center gap-1.5 transition-all group cursor-pointer shadow-2xs">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-ziraat-red group-hover:text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-qrcode text-sm"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-slate-700 text-center leading-tight">QR İşlemleri</span>
+                            </button>
+
+                            <button type="button" onclick="openBillScreen()" class="bg-white hover:bg-ziraat-light/60 active:scale-95 p-2.5 rounded-2xl border border-slate-200/80 flex flex-col items-center gap-1.5 transition-all group cursor-pointer shadow-2xs">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-ziraat-red group-hover:text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-slate-700 text-center leading-tight">Fatura Öde</span>
+                            </button>
+
+                            <button type="button" onclick="openExchangeScreen()" class="bg-white hover:bg-ziraat-light/60 active:scale-95 p-2.5 rounded-2xl border border-slate-200/80 flex flex-col items-center gap-1.5 transition-all group cursor-pointer shadow-2xs">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-coins text-sm"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-slate-700 text-center leading-tight">Altın / Döviz</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SON HESAP HAREKETLERİ (DEKONTLAR) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2.5 px-0.5">
+                            <h2 class="text-xs font-bold text-slate-800">Son Hesap Hareketleri</h2>
+                            <span class="text-[10px] font-semibold text-ziraat-red bg-ziraat-light px-2 py-0.5 rounded-full">
+                                Dekont için dokunun
+                            </span>
+                        </div>
+                        <div id="home-transactions-list" class="bg-white rounded-2xl border border-slate-200/80 divide-y divide-slate-100 shadow-sm overflow-hidden">
+                            <!-- JS ile doldurulacak -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== 2. SEKME: HESAPLARIM (TÜM VARLIKLAR) ==================== -->
+                <section id="view-hesaplar" class="hidden space-y-4 animate-fade-in">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-display font-bold text-base text-slate-900">Tüm Hesaplarım</h2>
+                        <button type="button" onclick="switchTab('profil')" class="text-[11px] font-bold text-ziraat-red bg-ziraat-light px-2.5 py-1 rounded-lg cursor-pointer">
+                            <i class="fa-solid fa-pen mr-1"></i>Bakiyeleri Düzenle
+                        </button>
+                    </div>
+
+                    <!-- Toplam Varlık Kartı -->
+                    <div class="bg-ziraat-charcoal text-white p-4 rounded-2xl shadow-md relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-28 h-28 bg-ziraat-red/20 rounded-bl-full pointer-events-none"></div>
+                        <p class="text-[11px] text-slate-400">Toplam Varlık Değeri (TL Karşılığı)</p>
+                        <h3 id="total-wealth-display" class="font-display text-2xl font-extrabold mt-1">₺126.975,80</h3>
+                        <div class="mt-3 pt-3 border-t border-slate-700/80 flex items-center justify-between text-[11px] text-slate-300">
+                            <span>Müşteri No: <strong id="accounts-cust-no" class="font-mono">84920145</strong></span>
+                            <span id="accounts-branch-label">Dörtyol / Hatay</span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Hesabın Detay Kartları -->
+                    <div id="all-accounts-cards" class="space-y-3">
+                        <!-- JS ile doldurulacak -->
+                    </div>
+                </section>
+
+                <!-- ==================== 3. SEKME: İŞLEMLER (TRANSFER / FATURA / DÖVİZ) ==================== -->
+                <section id="view-islemler" class="hidden space-y-4 animate-fade-in">
+                    <!-- Alt İşlem Sekmeleri -->
+                    <div class="grid grid-cols-3 bg-slate-200/90 p-1 rounded-xl text-[11px] font-bold">
+                        <button type="button" id="subtab-btn-transfer" onclick="switchActionSubtab('transfer')" class="py-2 rounded-lg bg-white text-ziraat-red shadow-xs cursor-pointer">
+                            FAST / Havale
+                        </button>
+                        <button type="button" id="subtab-btn-bill" onclick="switchActionSubtab('bill')" class="py-2 rounded-lg text-slate-600 cursor-pointer">
+                            Fatura Öde
+                        </button>
+                        <button type="button" id="subtab-btn-exchange" onclick="switchActionSubtab('exchange')" class="py-2 rounded-lg text-slate-600 cursor-pointer">
+                            Altın / Döviz
+                        </button>
+                    </div>
+
+                    <!-- ALT EKRAN A: GERÇEK PARA TRANSFERİ FORMU -->
+                    <form id="action-subtab-transfer" onsubmit="executeMoneyTransfer(event)" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3.5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                            <div>
+                                <h3 class="font-display font-bold text-sm text-slate-900">IBAN / Kolay Adres ile Transfer</h3>
+                                <p class="text-[10px] text-slate-500">Gönderim sonrası anında resmi dekont oluşturulur</p>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">7/24 FAST</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Gönderen Hesap</label>
+                            <div class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-700">Vadesiz TL Hesabı</span>
+                                <span id="transfer-available-tl" class="font-display font-bold text-ziraat-red">₺48.750,80</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Alıcı Adı Soyadı / Unvan</label>
+                            <input id="tx-receiver-name" type="text" value="Mehmet Demir" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-ziraat-red">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Alıcı IBAN</label>
+                            <input id="tx-receiver-iban" type="text" value="TR88 0001 0098 7654 3210 9876 54" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:border-ziraat-red">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Tutar (₺)</label>
+                                <input id="tx-amount" type="number" step="0.01" min="1" value="1250.00" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-display font-bold focus:outline-none focus:border-ziraat-red">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Ödeme Türü</label>
+                                <select id="tx-category" class="w-full px-2.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium bg-white focus:outline-none focus:border-ziraat-red">
+                                    <option value="Bireysel Ödeme">Bireysel Ödeme</option>
+                                    <option value="Kira Ödemesi">Kira Ödemesi</option>
+                                    <option value="Eğitim / Okul">Eğitim / Okul</option>
+                                    <option value="E-Ticaret / Alışveriş">E-Ticaret / Alışveriş</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">İşlem Açıklaması</label>
+                            <input id="tx-description" type="text" value="Proje ve Danışmanlık Bedeli" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-ziraat-red">
+                        </div>
+
+                        <button type="submit" class="w-full py-3 rounded-xl bg-ziraat-red hover:bg-ziraat-dark active:scale-[0.99] text-white font-bold text-xs shadow-md shadow-ziraat-red/30 transition-all cursor-pointer flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Onayla, Gönder & Dekontu Aç</span>
+                        </button>
+                    </form>
+
+                    <!-- ALT EKRAN B: FATURA ÖDEME -->
+                    <form id="action-subtab-bill" onsubmit="executeBillPayment(event)" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3.5">
+                        <h3 class="font-display font-bold text-sm text-slate-900 border-b border-slate-100 pb-2">Kurum & Fatura Ödeme</h3>
+                        
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kurum Seçiniz</label>
+                            <select id="bill-institution" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold bg-white focus:outline-none focus:border-ziraat-red">
+                                <option value="TOROSLAR EDAŞ ELEKTRİK">Toroslar EDAŞ (Elektrik)</option>
+                                <option value="HATSU SU VE KANALİZASYON">HATSU (Hatay Su İdaresi)</option>
+                                <option value="AKSA DOĞALGAZ DAĞITIM">Aksa Doğalgaz</option>
+                                <option value="TURKCELL İLETİŞİM HİZMETLERİ">Turkcell Faturalı Hat</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Abone / Tesisat No</label>
+                            <input id="bill-sub-no" type="text" value="4001928374" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:outline-none focus:border-ziraat-red">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Fatura Tutarı (₺)</label>
+                            <input id="bill-amount" type="number" step="0.01" min="1" value="485.50" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-display font-bold focus:outline-none focus:border-ziraat-red">
+                        </div>
+
+                        <button type="submit" class="w-full py-3 rounded-xl bg-ziraat-red hover:bg-ziraat-dark text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <span>Faturayı Öde & Dekont Oluştur</span>
+                        </button>
+                    </form>
+
+                    <!-- ALT EKRAN C: CANLI ALTIN & DÖVİZ AL-SAT -->
+                    <div id="action-subtab-exchange" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <h3 class="font-display font-bold text-sm text-slate-900">Altın & Döviz Alım / Satım</h3>
+                            <span class="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Canlı Kur</span>
+                        </div>
+
+                        <!-- Kur Bilgileri -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div class="p-3 rounded-xl bg-amber-50 border border-amber-200/80">
+                                <p class="text-[10px] font-bold text-amber-800">GRAM ALTIN (XAU)</p>
+                                <p class="font-display font-extrabold text-sm text-slate-900 mt-0.5">₺3.050,00</p>
+                                <p class="text-[10px] text-emerald-600 font-semibold">+%0,85</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200/80">
+                                <p class="text-[10px] font-bold text-emerald-800">ABD DOLARI (USD)</p>
+                                <p class="font-display font-extrabold text-sm text-slate-900 mt-0.5">₺34,20</p>
+                                <p class="text-[10px] text-emerald-600 font-semibold">+%0,22</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">İşlem Yapılacak Varlık</label>
+                                <select id="ex-asset" onchange="updateExchangePreview()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold bg-white">
+                                    <option value="gold">Gram Altın Al (1 gr = ₺3.050,00)</option>
+                                    <option value="usd">Amerikan Doları Al (1 $ = ₺34,20)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Alınacak Miktar (Gram veya USD)</label>
+                                <input id="ex-qty" type="number" step="0.1" min="0.1" value="1" oninput="updateExchangePreview()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-display font-bold">
+                            </div>
+
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center text-xs">
+                                <span class="text-slate-500">Vadesiz TL'den Çekilecek:</span>
+                                <span id="ex-total-tl" class="font-display font-extrabold text-ziraat-red">₺3.050,00</span>
+                            </div>
+
+                            <button type="button" onclick="executeExchange()" class="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+                                Alış İşlemini Onayla
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== 4. SEKME: KARTLARIM (3D BANKKART) ==================== -->
+                <section id="view-kartlar" class="hidden space-y-4 animate-fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="font-display font-bold text-base text-slate-900">Kartlarım</h2>
+                            <p class="text-[10px] text-slate-500">Arka yüz ve CVV için karta dokunun</p>
+                        </div>
+                        <button type="button" onclick="switchTab('profil')" class="text-[11px] font-bold text-ziraat-red bg-ziraat-light px-2.5 py-1 rounded-lg cursor-pointer">
+                            <i class="fa-solid fa-pen mr-1"></i>Kartı Düzenle
+                        </button>
+                    </div>
+
+                    <!-- 3D ÇEVRİLEBİLİR BANKKART ALANI -->
+                    <div class="perspective-1000 w-full h-52 cursor-pointer" onclick="flipCard()">
+                        <div id="bankkart-3d-inner" class="relative w-full h-full transform-style-3d">
+                            
+                            <!-- KART ÖN YÜZ -->
+                            <div id="bankkart-front" class="backface-hidden absolute inset-0 rounded-2xl bg-gradient-to-br from-ziraat-red via-[#C80510] to-ziraat-darker text-white p-5 shadow-card-red flex flex-col justify-between overflow-hidden wheat-dots">
+                                <div class="absolute -right-8 -bottom-8 w-40 h-40 rounded-full bg-white/10 pointer-events-none"></div>
+                                
+                                <div class="flex items-center justify-between z-10">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-wheat-awn text-lg text-amber-300"></i>
+                                        <span id="card-ui-title" class="font-display font-extrabold tracking-tight text-sm">Bankkart Genç</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[9px] bg-white/20 px-2 py-0.5 rounded-full">Çevir ↻</span>
+                                        <i class="fa-solid fa-wifi rotate-90 text-white/80 text-sm"></i>
+                                    </div>
+                                </div>
+
+                                <div class="z-10 space-y-2.5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-6 rounded-md bg-gradient-to-tr from-amber-300 to-amber-100 border border-amber-400/50"></div>
+                                        <button type="button" onclick="event.stopPropagation(); toggleCardNumberMask()" class="text-[10px] bg-black/25 hover:bg-black/40 px-2 py-0.5 rounded text-white/90 cursor-pointer">
+                                            <i id="card-mask-icon" class="fa-regular fa-eye mr-1"></i><span id="card-mask-label">Göster</span>
+                                        </button>
+                                    </div>
+                                    <p id="card-ui-number" class="font-mono text-base tracking-[0.16em] font-bold">
+                                        4546 •••• •••• 8924
+                                    </p>
+                                </div>
+
+                                <div class="flex items-end justify-between z-10">
+                                    <div>
+                                        <p class="text-[9px] uppercase tracking-wider text-white/70">Kart Sahibi</p>
+                                        <p id="card-ui-holder" class="font-display font-bold text-xs tracking-wide uppercase">ENES DEVA</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-right">
+                                            <p class="text-[8px] text-white/70">SKT</p>
+                                            <p id="card-ui-expiry" class="text-[11px] font-mono font-bold">09/29</p>
+                                        </div>
+                                        <div class="px-2 py-0.5 rounded bg-white/20 text-[10px] font-extrabold tracking-wider">
+                                            TROY
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KART ARKA YÜZ -->
+                            <div id="bankkart-back" class="backface-hidden rotate-y-180 absolute inset-0 rounded-2xl bg-gradient-to-br from-neutral-800 via-neutral-900 to-black text-white py-5 shadow-card-dark flex flex-col justify-between overflow-hidden">
+                                <!-- Manyetik Şerit -->
+                                <div class="w-full h-10 bg-black border-y border-neutral-700"></div>
+
+                                <div class="px-5 space-y-2">
+                                    <p class="text-[9px] text-neutral-400">YETKİLİ İMZA / GÜVENLİK KODU (CVV)</p>
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex-1 h-8 bg-neutral-200 rounded flex items-center px-3 text-neutral-700 font-mono text-xs italic">
+                                            Ziraat Bankası A.Ş.
+                                        </div>
+                                        <div class="w-14 h-8 bg-white text-slate-900 rounded flex items-center justify-center font-mono font-extrabold text-sm">
+                                            <span id="card-ui-cvv">482</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="px-5 flex items-center justify-between text-[10px] text-neutral-400">
+                                    <span>444 00 00 Ziraat Müşteri İletişim</span>
+                                    <span class="text-white font-semibold">Ön Yüz ↻</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Kart Limit & Borç Durumu -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Kullanılabilir Kart Limiti</span>
+                            <span id="card-ui-limit" class="font-display font-extrabold text-slate-900">₺25.000,00</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div id="card-limit-bar" class="w-[78%] h-full bg-ziraat-red rounded-full transition-all"></div>
+                        </div>
+                        <div class="flex justify-between text-[11px] text-slate-500">
+                            <span>Güncel Borç: <strong id="card-ui-debt" class="text-slate-800">₺3.550,00</strong></span>
+                            <span>Bankkart Lira: <strong class="text-amber-600">₺245,50</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Kart Güvenlik Ayarları -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 divide-y divide-slate-100 text-xs space-y-1">
+                        <div class="py-2 flex items-center justify-between">
+                            <span class="font-semibold text-slate-700"><i class="fa-solid fa-globe text-ziraat-red mr-2"></i>İnternet Alışverişi</span>
+                            <input type="checkbox" checked onchange="showToast('İnternet alışverişi yetkisi güncellendi.', 'success')" class="accent-ziraat-red w-4 h-4 cursor-pointer">
+                        </div>
+                        <div class="py-2 flex items-center justify-between">
+                            <span class="font-semibold text-slate-700"><i class="fa-solid fa-wifi text-ziraat-red mr-2"></i>Temassız Ödeme</span>
+                            <input type="checkbox" checked onchange="showToast('Temassız ödeme ayarı güncellendi.', 'success')" class="accent-ziraat-red w-4 h-4 cursor-pointer">
+                        </div>
+                        <div class="pt-2.5 flex items-center justify-between">
+                            <span class="font-semibold text-slate-700"><i class="fa-solid fa-key text-ziraat-red mr-2"></i>Kart Şifresi</span>
+                            <button type="button" onclick="openPinModal()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-ziraat-red hover:text-white font-bold text-[11px] transition-colors cursor-pointer">
+                                Şifre Belirle
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== 5. SEKME: PROFİL & ÖZELLEŞTİRME STÜDYOSU ==================== -->
+                <section id="view-profil" class="hidden space-y-4 animate-fade-in">
+                    
+                    <!-- Üst Profil Kimlik Kartı -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3.5">
+                        <div id="profile-big-avatar" class="w-14 h-14 rounded-2xl bg-ziraat-red text-white font-display font-extrabold text-lg flex items-center justify-center shrink-0 shadow-md shadow-ziraat-red/25">
+                            ED
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h2 id="profile-display-name" class="font-display font-bold text-base text-slate-900 truncate">Enes Deva</h2>
+                            <p id="profile-display-branch" class="text-[11px] text-slate-500 truncate">Dörtyol / Hatay Şubesi</p>
+                            <p class="text-[10px] font-mono text-slate-400 mt-0.5">Müşteri No: <span id="profile-display-custno">84920145</span></p>
+                        </div>
+                    </div>
+
+                    <!-- TASARIM & İÇERİK DÜZENLEME STÜDYOSU -->
+                    <div class="bg-white rounded-2xl border-2 border-ziraat-red/25 shadow-sm overflow-hidden">
+                        <div class="bg-ziraat-red text-white px-4 py-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+                                <div>
+                                    <h3 class="font-display font-bold text-xs">Tasarım & İçerik Düzenleme Stüdyosu</h3>
+                                    <p class="text-[10px] text-white/80">Tüm yazıları, bakiyeleri ve kartları canlı düzenle</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="resetAllData()" class="px-2 py-1 rounded bg-white/15 hover:bg-white/25 text-[10px] font-bold cursor-pointer" title="Fabrika Ayarlarına Dön">
+                                Sıfırla
+                            </button>
+                        </div>
+
+                        <div class="p-4 space-y-4 text-xs">
+                            
+                            <!-- 1. Profil & Şube Bilgileri -->
+                            <div class="space-y-2.5 border-b border-slate-100 pb-4">
+                                <h4 class="font-bold text-ziraat-red uppercase text-[10px] tracking-wider">1. Kullanıcı & Şube Bilgileri</h4>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Ad Soyad (Uygulama ve Kart Üzeri)</label>
+                                    <input id="edit-fullname" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-semibold focus:border-ziraat-red focus:outline-none">
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[11px] font-semibold text-slate-600 mb-1">Şube Adı</label>
+                                        <input id="edit-branch" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-semibold text-slate-600 mb-1">Müşteri No</label>
+                                        <input id="edit-custno" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Hesap Bakiyeleri & IBAN -->
+                            <div class="space-y-2.5 border-b border-slate-100 pb-4">
+                                <h4 class="font-bold text-ziraat-red uppercase text-[10px] tracking-wider">2. Hesap Bakiyeleri & IBAN</h4>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">Vadesiz TL (₺)</label>
+                                        <input id="edit-bal-tl" type="number" step="0.01" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 font-bold focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">Altın (gr)</label>
+                                        <input id="edit-bal-gold" type="number" step="0.01" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 font-bold focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">USD ($)</label>
+                                        <input id="edit-bal-usd" type="number" step="0.01" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 font-bold focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Vadesiz TL IBAN Numarası</label>
+                                    <input id="edit-iban-tl" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono text-[11px] focus:border-ziraat-red focus:outline-none">
+                                </div>
+                            </div>
+
+                            <!-- 3. Bankkart Özelleştirme -->
+                            <div class="space-y-2.5 border-b border-slate-100 pb-4">
+                                <h4 class="font-bold text-ziraat-red uppercase text-[10px] tracking-wider">3. Bankkart Görünüm & Limit</h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kart Tipi / Teması</label>
+                                        <select id="edit-card-type" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-white font-semibold focus:border-ziraat-red focus:outline-none">
+                                            <option value="Bankkart Genç">Bankkart Genç (Kırmızı)</option>
+                                            <option value="Bankkart Gold">Bankkart Gold (Altın)</option>
+                                            <option value="Bankkart Başak">Bankkart Başak (Siyah)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kart Limiti (₺)</label>
+                                        <input id="edit-card-limit" type="number" step="100" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 font-bold focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">16 Haneli Kart Numarası</label>
+                                    <input id="edit-card-number" type="text" maxlength="19" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono focus:border-ziraat-red focus:outline-none">
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">SKT (AA/YY)</label>
+                                        <input id="edit-card-expiry" type="text" maxlength="5" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 font-mono focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">CVV</label>
+                                        <input id="edit-card-cvv" type="text" maxlength="3" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 font-mono focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">Güncel Borç (₺)</label>
+                                        <input id="edit-card-debt" type="number" step="0.01" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 font-bold focus:border-ziraat-red focus:outline-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Değişiklikleri Kaydet Butonu -->
+                            <button type="button" onclick="saveStudioSettings()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-check-double"></i>
+                                <span>Tüm Değişiklikleri Uygula ve Kaydet</span>
+                            </button>
+
+                            <!-- 4. Özel Dekont Ekleme / Düzenleme Aracı -->
+                            <div class="pt-3 border-t border-slate-200 space-y-2.5">
+                                <h4 class="font-bold text-slate-800 uppercase text-[10px] tracking-wider flex items-center justify-between">
+                                    <span>4. Özel Test Dekontu Oluştur</span>
+                                    <span class="text-[9px] text-slate-400 font-normal">Hareketlere eklenir</span>
+                                </h4>
+                                <input id="custom-rec-title" type="text" placeholder="İşlem Başlığı (Örn: Burs Ödemesi)" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-ziraat-red focus:outline-none">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input id="custom-rec-party" type="text" placeholder="Karşı Taraf Adı" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-ziraat-red focus:outline-none">
+                                    <input id="custom-rec-amount" type="number" step="0.01" placeholder="Tutar (Örn: 5000)" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-bold focus:border-ziraat-red focus:outline-none">
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <select id="custom-rec-dir" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 bg-white">
+                                        <option value="in">Gelen Para (+)</option>
+                                        <option value="out">Giden Para (-)</option>
+                                    </select>
+                                    <button type="button" onclick="addCustomReceipt()" class="py-2 px-3 rounded-xl bg-slate-900 hover:bg-ziraat-red text-white font-bold text-[11px] transition-colors cursor-pointer">
+                                        + Dekont Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- ALT NAVİGASYON BARI (5 Sekme) -->
+            <nav class="absolute bottom-0 inset-x-0 bg-white border-t border-slate-200/90 px-2 pt-2 pb-5 flex items-center justify-around z-30">
+                <button type="button" onclick="switchTab('anasayfa')" id="nav-anasayfa" class="flex flex-col items-center gap-1 text-ziraat-red w-14 cursor-pointer">
+                    <i class="fa-solid fa-house text-base"></i>
+                    <span class="text-[10px] font-bold">Ana Sayfa</span>
+                </button>
+
+                <button type="button" onclick="switchTab('hesaplar')" id="nav-hesaplar" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 w-14 cursor-pointer">
+                    <i class="fa-solid fa-wallet text-base"></i>
+                    <span class="text-[10px] font-semibold">Hesaplarım</span>
+                </button>
+
+                <!-- Merkez Ziraat Aksiyon Butonu -->
+                <button type="button" onclick="switchTab('islemler')" id="nav-islemler" class="relative -top-4 flex flex-col items-center cursor-pointer group">
+                    <div class="w-12 h-12 rounded-2xl bg-ziraat-red group-hover:bg-ziraat-dark text-white shadow-lg shadow-ziraat-red/40 flex items-center justify-center transition-transform group-active:scale-95 border-4 border-white">
+                        <i class="fa-solid fa-wheat-awn text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-700 mt-0.5">İşlemler</span>
+                </button>
+
+                <button type="button" onclick="switchTab('kartlar')" id="nav-kartlar" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 w-14 cursor-pointer">
+                    <i class="fa-regular fa-credit-card text-base"></i>
+                    <span class="text-[10px] font-semibold">Kartlarım</span>
+                </button>
+
+                <button type="button" onclick="switchTab('profil')" id="nav-profil" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 w-14 cursor-pointer">
+                    <i class="fa-regular fa-user text-base"></i>
+                    <span class="text-[10px] font-semibold">Profil</span>
+                </button>
+            </nav>
+
+            <!-- ==================== RESMİ DİJİTAL DEKONT MODALI ==================== -->
+            <div id="receipt-modal" class="hidden absolute inset-0 bg-black/70 backdrop-blur-xs z-50 flex flex-col justify-end">
+                <div class="bg-white rounded-t-[30px] max-h-[93%] flex flex-col shadow-2xl animate-slide-up overflow-hidden">
+                    
+                    <!-- Dekont Üst Kırmızı Başlık -->
+                    <div class="bg-ziraat-red text-white px-5 py-3.5 flex items-center justify-between shrink-0">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-white text-ziraat-red flex items-center justify-center">
+                                <i class="fa-solid fa-wheat-awn text-base"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-display font-bold text-xs tracking-wide">T.C. ZİRAAT BANKASI A.Ş.</h3>
+                                <p class="text-[10px] text-white/85">Elektronik İşlem Dekontu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" onclick="toggleReceiptEditMode()" class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-[10px] font-bold cursor-pointer" title="Dekont Metnini Düzenle">
+                                <i class="fa-solid fa-pen mr-1"></i>Düzenle
+                            </button>
+                            <button type="button" onclick="closeReceiptModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white cursor-pointer">
+                                <i class="fa-solid fa-xmark text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yazdırılabilir / İndirilebilir Dekont Gövdesi -->
+                    <div id="printable-receipt-area" class="p-4 overflow-y-auto no-scrollbar space-y-3.5 text-xs bg-[#F8FAFC]">
+                        
+                        <!-- Tutar ve Onay Rozeti -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/90 text-center space-y-1 shadow-2xs">
+                            <span id="rec-badge" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">
+                                7/24 FAST Transferi
+                            </span>
+                            <h4 id="rec-amount" class="font-display text-2xl font-extrabold text-slate-900 pt-1">
+                                -₺2.450,00
+                            </h4>
+                            <p class="text-[11px] text-emerald-600 font-semibold flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> İşlem Başarıyla Tamamlandı
+                            </p>
+                        </div>
+
+                        <!-- Dekont Satırları -->
+                        <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 space-y-2 shadow-2xs">
+                            <div class="flex justify-between gap-2">
+                                <span class="text-slate-400">İşlem Tarihi / Saati</span>
+                                <span id="rec-date" class="font-semibold text-slate-800 text-right">13.11.2026 - 14:32:18</span>
+                            </div>
+                            <div class="flex justify-between gap-2">
+                                <span class="text-slate-400">Dekont / Sorgu No</span>
+                                <span id="rec-id" class="font-mono font-bold text-slate-800">ZRT-2026-9948120</span>
+                            </div>
+                            <div class="flex justify-between gap-2">
+                                <span class="text-slate-400">Şube Kodu / Adı</span>
+                                <span id="rec-branch" class="font-semibold text-slate-800 text-right">1248 - Dörtyol / Hatay</span>
+                            </div>
+
+                            <div class="border-t border-dashed border-slate-200 my-1.5"></div>
+
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">Gönderen Hesap Sahibi</span>
+                                <span id="rec-sender" class="font-bold text-slate-900 block">ENES DEVA</span>
+                                <span id="rec-sender-iban" class="font-mono text-[10px] text-slate-500">TR42 0001 0012 3456 7890 1234 56</span>
+                            </div>
+
+                            <div class="pt-1">
+                                <span class="text-[10px] text-slate-400 block">Alıcı / Kurum</span>
+                                <span id="rec-receiver" class="font-bold text-slate-900 block">AHMET YILMAZ</span>
+                                <span id="rec-receiver-iban" class="font-mono text-[10px] text-slate-500">TR19 0006 2000 4512 0006 7891 23</span>
+                            </div>
+
+                            <div class="border-t border-dashed border-slate-200 my-1.5"></div>
+
+                            <div class="flex justify-between gap-2">
+                                <span class="text-slate-400">İşlem Ücreti</span>
+                                <span class="font-semibold text-emerald-600">₺0,00 (Masrafsız)</span>
+                            </div>
+                            <div class="flex justify-between gap-2">
+                                <span class="text-slate-400">Açıklama</span>
+                                <span id="rec-desc" class="font-medium text-slate-800 text-right max-w-[190px]">Kira ve Ortak Gider Payı</span>
+                            </div>
+                        </div>
+
+                        <!-- Canlı Dekont Düzenleme Kutusu (Düzenle butonuna basınca açılır) -->
+                        <div id="receipt-inline-editor" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-3 space-y-2">
+                            <p class="text-[10px] font-bold text-amber-800 uppercase">Dekont Detaylarını Canlı Düzenle</p>
+                            <input id="inline-rec-receiver" type="text" placeholder="Alıcı / Kurum" class="w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-xs font-semibold">
+                            <input id="inline-rec-amount" type="text" placeholder="Tutar (Örn: -₺2.450,00)" class="w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-xs font-bold">
+                            <input id="inline-rec-desc" type="text" placeholder="Açıklama" class="w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-xs">
+                            <button type="button" onclick="applyInlineReceiptEdit()" class="w-full py-1.5 rounded-lg bg-amber-600 text-white font-bold text-xs cursor-pointer">
+                                Dekontu Güncelle
+                            </button>
+                        </div>
+
+                        <!-- Resmi Doğrulama Barkodu -->
+                        <div class="bg-white p-3 rounded-2xl border border-slate-200/90 flex items-center justify-between gap-3">
+                            <div class="space-y-0.5">
+                                <p class="text-[10px] font-bold text-slate-700 flex items-center gap-1">
+                                    <i class="fa-solid fa-shield-halved text-ziraat-red"></i>
+                                    5070 Sayılı E-İmza Doğrulamalı
+                                </p>
+                                <p id="rec-barcode-text" class="font-mono text-[9px] text-slate-400">DOGRULAMA: ZRT9948120TR</p>
+                            </div>
+                            <!-- SVG Barkod -->
+                            <svg class="w-24 h-8 shrink-0" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="2" y="2" width="3" height="32" fill="#1C1E21"/>
+                                <rect x="8" y="2" width="1" height="32" fill="#1C1E21"/>
+                                <rect x="12" y="2" width="4" height="32" fill="#1C1E21"/>
+                                <rect x="20" y="2" width="2" height="32" fill="#1C1E21"/>
+                                <rect x="25" y="2" width="1" height="32" fill="#1C1E21"/>
+                                <rect x="30" y="2" width="3" height="32" fill="#1C1E21"/>
+                                <rect x="37" y="2" width="2" height="32" fill="#1C1E21"/>
+                                <rect x="43" y="2" width="4" height="32" fill="#1C1E21"/>
+                                <rect x="51" y="2" width="1" height="32" fill="#1C1E21"/>
+                                <rect x="56" y="2" width="3" height="32" fill="#1C1E21"/>
+                                <rect x="63" y="2" width="2" height="32" fill="#1C1E21"/>
+                                <rect x="69" y="2" width="4" height="32" fill="#1C1E21"/>
+                                <rect x="77" y="2" width="1" height="32" fill="#1C1E21"/>
+                                <rect x="82" y="2" width="3" height="32" fill="#1C1E21"/>
+                                <rect x="89" y="2" width="2" height="32" fill="#1C1E21"/>
+                                <rect x="95" y="2" width="1" height="32" fill="#1C1E21"/>
+                                <rect x="100" y="2" width="4" height="32" fill="#1C1E21"/>
+                                <rect x="108" y="2" width="2" height="32" fill="#1C1E21"/>
+                                <rect x="114" y="2" width="3" height="32" fill="#1C1E21"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Dekont Alt Butonları -->
+                    <div class="p-3.5 bg-white border-t border-slate-200 grid grid-cols-2 gap-2.5 shrink-0">
+                        <button type="button" onclick="downloadReceiptFile()" class="py-2.5 px-3 rounded-xl bg-ziraat-red hover:bg-ziraat-dark text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Dekont İndir</span>
+                        </button>
+                        <button type="button" onclick="shareReceiptText()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer">
+                            <i class="fa-solid fa-share-nodes"></i>
+                            <span>Paylaş</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== BİLDİRİM PANELİ MODALI ==================== -->
+            <div id="notifications-modal" class="hidden absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex flex-col justify-end">
+                <div class="bg-white rounded-t-[28px] p-5 space-y-4 animate-slide-up max-h-[75%] overflow-y-auto">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="font-display font-bold text-sm text-slate-900">Bildirimler & Duyurular</h3>
+                        <button type="button" onclick="closeNotifications()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 cursor-pointer">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2.5 text-xs">
+                        <div class="p-3 rounded-xl bg-ziraat-light/70 border border-ziraat-red/15">
+                            <p class="font-bold text-ziraat-red">Bankkart Genç Kampanyası</p>
+                            <p class="text-slate-600 mt-0.5">Market ve kafe harcamalarınızda anında %10 Bankkart Lira kazanma fırsatı!</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                            <p class="font-bold text-slate-800">7/24 FAST Limiti Güncellendi</p>
+                            <p class="text-slate-600 mt-0.5">Anlık para transferi limitiniz 100.000 TL olarak tanımlanmıştır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== QR İŞLEMLERİ MODALI ==================== -->
+            <div id="qr-modal" class="hidden absolute inset-0 bg-black/70 backdrop-blur-xs z-50 flex flex-col justify-end">
+                <div class="bg-white rounded-t-[28px] p-5 space-y-4 text-center animate-slide-up">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-display font-bold text-sm text-slate-900">QR ile Hızlı İşlem</h3>
+                        <button type="button" onclick="closeQrModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 cursor-pointer">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="w-44 h-44 mx-auto bg-slate-50 border-2 border-dashed border-ziraat-red rounded-2xl flex flex-col items-center justify-center p-4">
+                        <i class="fa-solid fa-qrcode text-6xl text-slate-800"></i>
+                        <span class="text-[10px] font-mono text-slate-500 mt-2">ZIRAAT-QR-849201</span>
+                    </div>
+                    <p class="text-xs text-slate-600">Ziraat ATM'lerinden kartsız para çekmek veya POS cihazından ödeme yapmak için kodu okutun.</p>
+                    <button type="button" onclick="closeQrModal(); showToast('QR kodu doğrulandı, ATM bağlantısı kuruldu.', 'success')" class="w-full py-2.5 rounded-xl bg-ziraat-red text-white font-bold text-xs cursor-pointer">
+                        ATM'den Para Çekmeyi Simüle Et
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== KART ŞİFRESİ BELİRLEME MODALI ==================== -->
+            <div id="pin-modal" class="hidden absolute inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-5">
+                <div class="bg-white rounded-2xl p-5 w-full space-y-3.5 shadow-xl animate-fade-in">
+                    <h3 class="font-display font-bold text-sm text-slate-900">Yeni Kart Şifresi Belirle</h3>
+                    <p class="text-xs text-slate-500">4 haneli yeni Bankkart şifrenizi giriniz.</p>
+                    <input id="new-card-pin" type="password" maxlength="4" placeholder="••••" class="w-full text-center tracking-[0.5em] font-mono text-lg font-bold py-2.5 rounded-xl border border-slate-200 focus:border-ziraat-red focus:outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" onclick="closePinModal()" class="py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs cursor-pointer">Vazgeç</button>
+                        <button type="button" onclick="saveCardPin()" class="py-2 rounded-xl bg-ziraat-red text-white font-bold text-xs cursor-pointer">Şifreyi Kaydet</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <div id="hack-screen" class="hidden">
-        <canvas id="matrix-canvas"></canvas>
-        <div class="terminal-text" style="position: absolute; top: 10%; left: 10%; color: #0f0; font-family: monospace;">
-            <p id="line1"></p>
-            <p id="line2"></p>
-            <p id="line3"></p>
-            <p id="line4"></p>
-        </div>
-        <div class="system-alert hidden" id="final-alert">
-            CRITICAL ERROR: SYSTEM COMPROMISED
-        </div>
-    </div>
+    <!-- JAVASCRIPT: TAM KAPSAMLI UYGULAMA MANTIĞI & LOCALSTORAGE STATE -->
+    <script>
+        const STORAGE_KEY = 'ziraat_mobil_enes_deva_v2';
 
-    <script src="script.js"></script>
+        // Varsayılan Uygulama Durumu
+        const defaultState = {
+            user: {
+                fullName: 'Enes Deva',
+                branch: 'Dörtyol / Hatay Şubesi',
+                customerNo: '84920145'
+            },
+            accounts: {
+                tl: {
+                    name: 'Vadesiz TL Hesabı',
+                    balance: 48750.80,
+                    iban: 'TR42 0001 0012 3456 7890 1234 56',
+                    accNo: '1248-84920145-5001'
+                },
+                gold: {
+                    name: 'Vadesiz Altın (XAU)',
+                    balance: 14.50,
+                    rate: 3050.00,
+                    iban: 'TR42 0001 0012 3456 7890 1234 57',
+                    accNo: '1248-84920145-5002'
+                },
+                usd: {
+                    name: 'Vadesiz USD Hesabı',
+                    balance: 994.15,
+                    rate: 34.20,
+                    iban: 'TR42 0001 0012 3456 7890 1234 58',
+                    accNo: '1248-84920145-5003'
+                }
+            },
+            card: {
+                type: 'Bankkart Genç',
+                number: '4546 7812 3490 8924',
+                expiry: '09/29',
+                cvv: '482',
+                limit: 25000.00,
+                debt: 3550.00
+            },
+            transactions: [
+                {
+                    id: 'ZRT-2026-9948120',
+                    title: 'FAST Para Transferi - Ahmet Yılmaz',
+                    category: '7/24 FAST Transferi',
+                    date: '13.11.2026 • 14:32',
+                    fullDate: '13.11.2026 - 14:32:18',
+                    amount: '-₺2.450,00',
+                    isPositive: false,
+                    icon: 'fa-paper-plane',
+                    sender: 'ENES DEVA',
+                    senderIban: 'TR42 0001 0012 3456 7890 1234 56',
+                    receiver: 'AHMET YILMAZ',
+                    receiverIban: 'TR19 0006 2000 4512 0006 7891 23',
+                    desc: 'Kira ve Ortak Gider Payı'
+                },
+                {
+                    id: 'ZRT-2026-9947804',
+                    title: 'Proje Hakediş Ödemesi',
+                    category: 'Gelen Havale',
+                    date: '10.11.2026 • 09:15',
+                    fullDate: '10.11.2026 - 09:15:04',
+                    amount: '+₺34.500,00',
+                    isPositive: true,
+                    icon: 'fa-arrow-down-left',
+                    sender: 'TEKNOLOJİ YAZILIM A.Ş.',
+                    senderIban: 'TR64 0001 0000 1122 3344 5566 77',
+                    receiver: 'ENES DEVA',
+                    receiverIban: 'TR42 0001 0012 3456 7890 1234 56',
+                    desc: 'Kasım 2026 UI/UX Tasarım Ödemesi'
+                },
+                {
+                    id: 'ZRT-2026-9945112',
+                    title: 'Migros Market Harcaması',
+                    category: 'Bankkart POS',
+                    date: '08.11.2026 • 19:44',
+                    fullDate: '08.11.2026 - 19:44:51',
+                    amount: '-₺845,20',
+                    isPositive: false,
+                    icon: 'fa-cart-shopping',
+                    sender: 'ENES DEVA',
+                    senderIban: 'TR42 0001 0012 3456 7890 1234 56',
+                    receiver: 'MİGROS TİCARET A.Ş. - DÖRTYOL',
+                    receiverIban: 'POS İŞLEMİ (4546****8924)',
+                    desc: 'Temassız Kart Alışverişi'
+                },
+                {
+                    id: 'ZRT-2026-9941089',
+                    title: 'Toroslar EDAŞ Elektrik Faturası',
+                    category: 'Kurum Fatura Ödeme',
+                    date: '05.11.2026 • 11:20',
+                    fullDate: '05.11.2026 - 11:20:33',
+                    amount: '-₺612,50',
+                    isPositive: false,
+                    icon: 'fa-bolt',
+                    sender: 'ENES DEVA',
+                    senderIban: 'TR42 0001 0012 3456 7890 1234 56',
+                    receiver: 'TOROSLAR EDAŞ ELEKTRİK',
+                    receiverIban: 'Abone No: 4001928374',
+                    desc: '2026/10 Dönemi Elektrik Faturası'
+                }
+            ]
+        };
+
+        let appState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(JSON.stringify(defaultState));
+        let selectedAccountType = 'tl';
+        let hideBalances = false;
+        let showFullCardNumber = false;
+        let isCardFlipped = false;
+        let activeReceiptIndex = 0;
+
+        // State'i LocalStorage'a Kaydet ve Tüm Ekranları Senkronize Et
+        function persistAndSync() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+            renderAllUI();
+        }
+
+        // Baş Harfleri Hesapla (Örn: Enes Deva -> ED)
+        function getInitials(name) {
+            const parts = name.trim().split(/\s+/);
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        // Para Formatlayıcı
+        function formatTRY(num) {
+            return '₺' + Number(num).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Tüm Arayüzü Güncelle
+        function renderAllUI() {
+            // 1. Header & Profil Bilgileri
+            const initials = getInitials(appState.user.fullName);
+            document.getElementById('header-avatar').textContent = initials;
+            document.getElementById('profile-big-avatar').textContent = initials;
+            document.getElementById('header-username').textContent = appState.user.fullName;
+            document.getElementById('profile-display-name').textContent = appState.user.fullName;
+            document.getElementById('header-branch').textContent = appState.user.branch;
+            document.getElementById('profile-display-branch').textContent = appState.user.branch;
+            document.getElementById('profile-display-custno').textContent = appState.user.customerNo;
+            document.getElementById('accounts-cust-no').textContent = appState.user.customerNo;
+            document.getElementById('accounts-branch-label').textContent = appState.user.branch;
+
+            // 2. Aktif Hesap Kartı (Ana Sayfa)
+            renderActiveAccountCard();
+
+            // 3. Hesaplarım Sekmesi
+            renderAllAccountsSection();
+
+            // 4. Transfer Ekranı Kullanılabilir Bakiye
+            document.getElementById('transfer-available-tl').textContent = formatTRY(appState.accounts.tl.balance);
+
+            // 5. Son Hesap Hareketleri
+            renderTransactionsList();
+
+            // 6. Bankkart 3D Görünümü
+            renderBankkartUI();
+
+            // 7. Profil Stüdyo Inputlarını Doldur
+            populateStudioInputs();
+        }
+
+        // Ana Sayfa Hesap Kartı Çizimi
+        function renderActiveAccountCard() {
+            const container = document.getElementById('active-account-card');
+            const acc = appState.accounts[selectedAccountType];
+
+            let badgeColor = 'bg-ziraat-red';
+            let balanceText = '';
+            let subInfo = '';
+
+            if (selectedAccountType === 'tl') {
+                badgeColor = 'bg-ziraat-red';
+                balanceText = hideBalances ? '₺ ••••••••' : formatTRY(acc.balance);
+                subInfo = 'Kullanılabilir Bakiye';
+            } else if (selectedAccountType === 'gold') {
+                badgeColor = 'bg-amber-500';
+                const tlEq = acc.balance * acc.rate;
+                balanceText = hideBalances ? '•••• gr' : `${Number(acc.balance).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} gr`;
+                subInfo = hideBalances ? '≈ ₺ ••••••' : `TL Karşılığı: ≈ ${formatTRY(tlEq)}`;
+            } else {
+                badgeColor = 'bg-emerald-600';
+                const tlEq = acc.balance * acc.rate;
+                balanceText = hideBalances ? '$ ••••••' : `$${Number(acc.balance).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}`;
+                subInfo = hideBalances ? '≈ ₺ ••••••' : `TL Karşılığı: ≈ ${formatTRY(tlEq)}`;
+            }
+
+            container.innerHTML = `
+                <div class="flex items-start justify-between mb-2.5">
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full ${badgeColor}"></span>
+                            <span class="text-xs font-bold text-slate-800">${acc.name}</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-0.5">${appState.user.branch} • ${acc.accNo}</p>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200/70">Aktif</span>
+                </div>
+
+                <div class="my-2.5">
+                    <p class="text-[10px] text-slate-400 font-medium">${subInfo}</p>
+                    <h3 class="font-display text-2xl font-extrabold text-slate-900 tracking-tight mt-0.5">${balanceText}</h3>
+                </div>
+
+                <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div class="truncate">
+                        <span class="text-[9px] text-slate-400 uppercase block">IBAN Numarası</span>
+                        <span class="text-[11px] font-mono font-semibold text-slate-700">${acc.iban}</span>
+                    </div>
+                    <button type="button" onclick="copyToClipboard('${acc.iban}', 'IBAN numarası panoya kopyalandı!')" class="px-2.5 py-1.5 rounded-lg bg-ziraat-light hover:bg-ziraat-red text-ziraat-red hover:text-white text-[11px] font-bold transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>Kopyala</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Hesaplarım Sekmesi Çizimi
+        function renderAllAccountsSection() {
+            const tl = appState.accounts.tl.balance;
+            const goldTl = appState.accounts.gold.balance * appState.accounts.gold.rate;
+            const usdTl = appState.accounts.usd.balance * appState.accounts.usd.rate;
+            const totalWealth = tl + goldTl + usdTl;
+
+            document.getElementById('total-wealth-display').textContent = hideBalances ? '₺ ••••••••' : formatTRY(totalWealth);
+
+            const wrapper = document.getElementById('all-accounts-cards');
+            wrapper.innerHTML = `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-ziraat-red">${appState.accounts.tl.name}</span>
+                        <span class="text-[10px] font-mono text-slate-400">${appState.accounts.tl.accNo}</span>
+                    </div>
+                    <p class="font-display text-xl font-extrabold text-slate-900">${hideBalances ? '₺ ••••••' : formatTRY(tl)}</p>
+                    <p class="text-[10px] font-mono text-slate-500">${appState.accounts.tl.iban}</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-sm space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-amber-700">${appState.accounts.gold.name}</span>
+                        <span class="text-[10px] font-mono text-slate-400">${appState.accounts.gold.accNo}</span>
+                    </div>
+                    <p class="font-display text-xl font-extrabold text-slate-900">${hideBalances ? '•••• gr' : appState.accounts.gold.balance.toFixed(2) + ' gr'} <span class="text-xs font-normal text-slate-500">(≈ ${formatTRY(goldTl)})</span></p>
+                    <p class="text-[10px] font-mono text-slate-500">${appState.accounts.gold.iban}</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-emerald-200 shadow-sm space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-emerald-700">${appState.accounts.usd.name}</span>
+                        <span class="text-[10px] font-mono text-slate-400">${appState.accounts.usd.accNo}</span>
+                    </div>
+                    <p class="font-display text-xl font-extrabold text-slate-900">${hideBalances ? '$ ••••' : '$' + appState.accounts.usd.balance.toFixed(2)} <span class="text-xs font-normal text-slate-500">(≈ ${formatTRY(usdTl)})</span></p>
+                    <p class="text-[10px] font-mono text-slate-500">${appState.accounts.usd.iban}</p>
+                </div>
+            `;
+        }
+
+        // Son Hesap Hareketlerini Listele
+        function renderTransactionsList() {
+            const list = document.getElementById('home-transactions-list');
+            list.innerHTML = '';
+
+            appState.transactions.forEach((tx, index) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => openReceiptModal(index);
+                btn.className = 'w-full p-3.5 hover:bg-slate-50 active:bg-ziraat-light/40 transition-colors flex items-center justify-between gap-3 text-left cursor-pointer group';
+
+                const iconClass = tx.isPositive
+                    ? 'bg-emerald-50 text-emerald-600'
+                    : 'bg-slate-100 text-slate-600 group-hover:bg-ziraat-light group-hover:text-ziraat-red';
+                const amtClass = tx.isPositive ? 'text-emerald-600' : 'text-slate-900';
+
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-xl ${iconClass} flex items-center justify-center shrink-0 transition-colors">
+                            <i class="fa-solid ${tx.icon} text-xs"></i>
+                        </div>
+                        <div class="truncate">
+                            <p class="text-xs font-bold text-slate-800 truncate group-hover:text-ziraat-red transition-colors">${tx.title}</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">${tx.date} • <span class="underline decoration-dotted text-slate-500">Dekontu Gör</span></p>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="text-xs font-display font-extrabold ${amtClass} block">${tx.amount}</span>
+                        <i class="fa-solid fa-chevron-right text-[9px] text-slate-300 group-hover:text-ziraat-red"></i>
+                    </div>
+                `;
+                list.appendChild(btn);
+            });
+        }
+
+        // Bankkart Ön & Arka Yüz Güncelleme
+        function renderBankkartUI() {
+            const c = appState.card;
+            document.getElementById('card-ui-title').textContent = c.type;
+            document.getElementById('card-ui-holder').textContent = appState.user.fullName.toUpperCase();
+            document.getElementById('card-ui-expiry').textContent = c.expiry;
+            document.getElementById('card-ui-cvv').textContent = c.cvv;
+
+            // Kart Tema Rengi (Genç = Kırmızı, Gold = Altın, Başak = Koyu Gri)
+            const frontEl = document.getElementById('bankkart-front');
+            frontEl.className = 'backface-hidden absolute inset-0 rounded-2xl text-white p-5 flex flex-col justify-between overflow-hidden wheat-dots ';
+            if (c.type === 'Bankkart Gold') {
+                frontEl.className += 'bg-gradient-to-br from-amber-600 via-amber-700 to-yellow-900 shadow-card-gold';
+            } else if (c.type === 'Bankkart Başak') {
+                frontEl.className += 'bg-gradient-to-br from-neutral-800 via-zinc-900 to-black shadow-card-dark';
+            } else {
+                frontEl.className += 'bg-gradient-to-br from-ziraat-red via-[#C80510] to-ziraat-darker shadow-card-red';
+            }
+
+            // Kart Numarası Maskeleme
+            const cleanNum = c.number.replace(/\s+/g, '');
+            const formattedFull = cleanNum.replace(/(.{4})/g, '$1 ').trim();
+            const masked = cleanNum.length >= 8
+                ? `${cleanNum.slice(0, 4)} •••• •••• ${cleanNum.slice(-4)}`
+                : formattedFull;
+
+            document.getElementById('card-ui-number').textContent = showFullCardNumber ? formattedFull : masked;
+            document.getElementById('card-mask-label').textContent = showFullCardNumber ? 'Gizle' : 'Göster';
+            document.getElementById('card-mask-icon').className = showFullCardNumber ? 'fa-regular fa-eye-slash mr-1' : 'fa-regular fa-eye mr-1';
+
+            // Limit ve Borç
+            const avail = Math.max(0, c.limit - c.debt);
+            document.getElementById('card-ui-limit').textContent = formatTRY(avail);
+            document.getElementById('card-ui-debt').textContent = formatTRY(c.debt);
+            const pct = c.limit > 0 ? Math.min(100, Math.round((avail / c.limit) * 100)) : 0;
+            document.getElementById('card-limit-bar').style.width = pct + '%';
+        }
+
+        // Profil Stüdyo Alanlarını Doldur
+        function populateStudioInputs() {
+            document.getElementById('edit-fullname').value = appState.user.fullName;
+            document.getElementById('edit-branch').value = appState.user.branch;
+            document.getElementById('edit-custno').value = appState.user.customerNo;
+
+            document.getElementById('edit-bal-tl').value = appState.accounts.tl.balance;
+            document.getElementById('edit-bal-gold').value = appState.accounts.gold.balance;
+            document.getElementById('edit-bal-usd').value = appState.accounts.usd.balance;
+            document.getElementById('edit-iban-tl').value = appState.accounts.tl.iban;
+
+            document.getElementById('edit-card-type').value = appState.card.type;
+            document.getElementById('edit-card-limit').value = appState.card.limit;
+            document.getElementById('edit-card-number').value = appState.card.number;
+            document.getElementById('edit-card-expiry').value = appState.card.expiry;
+            document.getElementById('edit-card-cvv').value = appState.card.cvv;
+            document.getElementById('edit-card-debt').value = appState.card.debt;
+        }
+
+        // Stüdyo Değişikliklerini Kaydet
+        function saveStudioSettings() {
+            const newName = document.getElementById('edit-fullname').value.trim() || 'Enes Deva';
+            const newBranch = document.getElementById('edit-branch').value.trim() || 'Dörtyol / Hatay Şubesi';
+            const newCustNo = document.getElementById('edit-custno').value.trim() || '84920145';
+
+            appState.user.fullName = newName;
+            appState.user.branch = newBranch;
+            appState.user.customerNo = newCustNo;
+
+            appState.accounts.tl.balance = parseFloat(document.getElementById('edit-bal-tl').value) || 0;
+            appState.accounts.gold.balance = parseFloat(document.getElementById('edit-bal-gold').value) || 0;
+            appState.accounts.usd.balance = parseFloat(document.getElementById('edit-bal-usd').value) || 0;
+            appState.accounts.tl.iban = document.getElementById('edit-iban-tl').value.trim() || appState.accounts.tl.iban;
+
+            appState.card.type = document.getElementById('edit-card-type').value;
+            appState.card.limit = parseFloat(document.getElementById('edit-card-limit').value) || 0;
+            appState.card.number = document.getElementById('edit-card-number').value.trim() || appState.card.number;
+            appState.card.expiry = document.getElementById('edit-card-expiry').value.trim() || '09/29';
+            appState.card.cvv = document.getElementById('edit-card-cvv').value.trim() || '482';
+            appState.card.debt = parseFloat(document.getElementById('edit-card-debt').value) || 0;
+
+            persistAndSync();
+            showToast('Tüm profil, bakiye ve kart ayarları güncellendi!', 'success');
+        }
+
+        // Özel Dekont Ekleme
+        function addCustomReceipt() {
+            const title = document.getElementById('custom-rec-title').value.trim();
+            const party = document.getElementById('custom-rec-party').value.trim() || 'ZİRAAT MÜŞTERİSİ';
+            const amountVal = parseFloat(document.getElementById('custom-rec-amount').value);
+            const dir = document.getElementById('custom-rec-dir').value;
+
+            if (!title || isNaN(amountVal) || amountVal <= 0) {
+                showToast('Lütfen işlem başlığı ve geçerli tutar girin.', 'error');
+                return;
+            }
+
+            const isPositive = dir === 'in';
+            const formattedAmt = (isPositive ? '+' : '-') + formatTRY(amountVal);
+            const nowStr = getCurrentFormattedDate();
+            const randomId = 'ZRT-2026-' + Math.floor(1000000 + Math.random() * 9000000);
+
+            const newTx = {
+                id: randomId,
+                title: title,
+                category: isPositive ? 'Gelen Transfer' : 'Giden Transfer',
+                date: 'Az önce • Bugün',
+                fullDate: nowStr,
+                amount: formattedAmt,
+                isPositive: isPositive,
+                icon: isPositive ? 'fa-arrow-down-left' : 'fa-paper-plane',
+                sender: isPositive ? party.toUpperCase() : appState.user.fullName.toUpperCase(),
+                senderIban: isPositive ? 'TR64 0001 0000 5544 3322 1100 99' : appState.accounts.tl.iban,
+                receiver: isPositive ? appState.user.fullName.toUpperCase() : party.toUpperCase(),
+                receiverIban: isPositive ? appState.accounts.tl.iban : 'TR88 0001 0098 7654 3210 9876 54',
+                desc: title
+            };
+
+            appState.transactions.unshift(newTx);
+            persistAndSync();
+
+            document.getElementById('custom-rec-title').value = '';
+            document.getElementById('custom-rec-party').value = '';
+            document.getElementById('custom-rec-amount').value = '';
+
+            showToast('Yeni dekont hesap hareketlerine eklendi!', 'success');
+            openReceiptModal(0);
+        }
+
+        // Fabrika Ayarlarına Sıfırla
+        function resetAllData() {
+            appState = JSON.parse(JSON.stringify(defaultState));
+            persistAndSync();
+            showToast('Tüm veriler Enes Deva varsayılan ayarlarına döndürüldü.', 'info');
+        }
+
+        // Hesap Kartı Seçimi (TL / Altın / USD)
+        function selectAccountCard(type) {
+            selectedAccountType = type;
+            ['tl', 'gold', 'usd'].forEach(t => {
+                const btn = document.getElementById('pill-' + t);
+                if (t === type) {
+                    btn.className = 'px-3 py-1.5 rounded-lg bg-white text-ziraat-red shadow-xs transition-all cursor-pointer';
+                } else {
+                    btn.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all cursor-pointer';
+                }
+            });
+            renderActiveAccountCard();
+        }
+
+        // Bakiye Gizle/Göster
+        function toggleBalanceVisibility() {
+            hideBalances = !hideBalances;
+            document.getElementById('global-eye-icon').className = hideBalances
+                ? 'fa-regular fa-eye-slash text-xs text-ziraat-red'
+                : 'fa-regular fa-eye text-xs';
+            renderActiveAccountCard();
+            renderAllAccountsSection();
+        }
+
+        // Kart Çevirme & Numara Gösterme
+        function flipCard() {
+            isCardFlipped = !isCardFlipped;
+            const inner = document.getElementById('bankkart-3d-inner');
+            if (isCardFlipped) inner.classList.add('rotate-y-180');
+            else inner.classList.remove('rotate-y-180');
+        }
+
+        function toggleCardNumberMask() {
+            showFullCardNumber = !showFullCardNumber;
+            renderBankkartUI();
+        }
+
+        // Ana Sekme Geçişleri
+        function switchTab(tabName) {
+            const views = ['anasayfa', 'hesaplar', 'islemler', 'kartlar', 'profil'];
+            views.forEach(v => {
+                document.getElementById('view-' + v).classList.add('hidden');
+                const nav = document.getElementById('nav-' + v);
+                if (nav && v !== 'islemler') {
+                    nav.classList.remove('text-ziraat-red');
+                    nav.classList.add('text-slate-400');
+                }
+            });
+
+            document.getElementById('view-' + tabName).classList.remove('hidden');
+            const activeNav = document.getElementById('nav-' + tabName);
+            if (activeNav && tabName !== 'islemler') {
+                activeNav.classList.remove('text-slate-400');
+                activeNav.classList.add('text-ziraat-red');
+            }
+            document.getElementById('app-scroll-container').scrollTop = 0;
+        }
+
+        // İşlemler Alt Sekme Geçişi
+        function switchActionSubtab(sub) {
+            ['transfer', 'bill', 'exchange'].forEach(s => {
+                document.getElementById('action-subtab-' + s).classList.add('hidden');
+                const b = document.getElementById('subtab-btn-' + s);
+                b.className = 'py-2 rounded-lg text-slate-600 cursor-pointer';
+            });
+            document.getElementById('action-subtab-' + sub).classList.remove('hidden');
+            document.getElementById('subtab-btn-' + sub).className = 'py-2 rounded-lg bg-white text-ziraat-red shadow-xs cursor-pointer';
+        }
+
+        function openTransferScreen() { switchTab('islemler'); switchActionSubtab('transfer'); }
+        function openBillScreen() { switchTab('islemler'); switchActionSubtab('bill'); }
+        function openExchangeScreen() { switchTab('islemler'); switchActionSubtab('exchange'); updateExchangePreview(); }
+
+        // GERÇEK PARA TRANSFERİ İŞLEMİ
+        function executeMoneyTransfer(e) {
+            e.preventDefault();
+            const receiver = document.getElementById('tx-receiver-name').value.trim();
+            const iban = document.getElementById('tx-receiver-iban').value.trim();
+            const amount = parseFloat(document.getElementById('tx-amount').value);
+            const category = document.getElementById('tx-category').value;
+            const desc = document.getElementById('tx-description').value.trim() || category;
+
+            if (!receiver || isNaN(amount) || amount <= 0) {
+                showToast('Geçerli bir tutar ve alıcı giriniz.', 'error');
+                return;
+            }
+            if (amount > appState.accounts.tl.balance) {
+                showToast('Vadesiz TL bakiyeniz yetersiz!', 'error');
+                return;
+            }
+
+            // Bakiyeden Düş
+            appState.accounts.tl.balance = Number((appState.accounts.tl.balance - amount).toFixed(2));
+
+            // Yeni İşlem ve Dekont Oluştur
+            const newTx = {
+                id: 'ZRT-2026-' + Math.floor(1000000 + Math.random() * 9000000),
+                title: `FAST Transferi - ${receiver}`,
+                category: `7/24 FAST (${category})`,
+                date: 'Az önce • Şimdi',
+                fullDate: getCurrentFormattedDate(),
+                amount: '-' + formatTRY(amount),
+                isPositive: false,
+                icon: 'fa-paper-plane',
+                sender: appState.user.fullName.toUpperCase(),
+                senderIban: appState.accounts.tl.iban,
+                receiver: receiver.toUpperCase(),
+                receiverIban: iban,
+                desc: desc
+            };
+
+            appState.transactions.unshift(newTx);
+            persistAndSync();
+            switchTab('anasayfa');
+            showToast('FAST transferi gerçekleşti! Dekont açılıyor...', 'success');
+            setTimeout(() => openReceiptModal(0), 250);
+        }
+
+        // GERÇEK FATURA ÖDEME İŞLEMİ
+        function executeBillPayment(e) {
+            e.preventDefault();
+            const inst = document.getElementById('bill-institution').value;
+            const subNo = document.getElementById('bill-sub-no').value.trim();
+            const amount = parseFloat(document.getElementById('bill-amount').value);
+
+            if (isNaN(amount) || amount <= 0 || amount > appState.accounts.tl.balance) {
+                showToast('Yetersiz bakiye veya geçersiz tutar.', 'error');
+                return;
+            }
+
+            appState.accounts.tl.balance = Number((appState.accounts.tl.balance - amount).toFixed(2));
+
+            const newTx = {
+                id: 'ZRT-2026-' + Math.floor(1000000 + Math.random() * 9000000),
+                title: `${inst} Faturası`,
+                category: 'Kurum Fatura Ödeme',
+                date: 'Az önce • Şimdi',
+                fullDate: getCurrentFormattedDate(),
+                amount: '-' + formatTRY(amount),
+                isPositive: false,
+                icon: 'fa-file-invoice-dollar',
+                sender: appState.user.fullName.toUpperCase(),
+                senderIban: appState.accounts.tl.iban,
+                receiver: inst,
+                receiverIban: `Abone No: ${subNo}`,
+                desc: 'Otomatik / Anlık Fatura Tahsilatı'
+            };
+
+            appState.transactions.unshift(newTx);
+            persistAndSync();
+            switchTab('anasayfa');
+            showToast('Fatura ödendi! Dekont oluşturuldu.', 'success');
+            setTimeout(() => openReceiptModal(0), 250);
+        }
+
+        // CANLI ALTIN / DÖVİZ HESAPLAYICI VE ALIŞ İŞLEMİ
+        function updateExchangePreview() {
+            const asset = document.getElementById('ex-asset').value;
+            const qty = parseFloat(document.getElementById('ex-qty').value) || 0;
+            const rate = asset === 'gold' ? appState.accounts.gold.rate : appState.accounts.usd.rate;
+            document.getElementById('ex-total-tl').textContent = formatTRY(qty * rate);
+        }
+
+        function executeExchange() {
+            const asset = document.getElementById('ex-asset').value;
+            const qty = parseFloat(document.getElementById('ex-qty').value) || 0;
+            const rate = asset === 'gold' ? appState.accounts.gold.rate : appState.accounts.usd.rate;
+            const totalTl = Number((qty * rate).toFixed(2));
+
+            if (qty <= 0 || totalTl > appState.accounts.tl.balance) {
+                showToast('TL bakiyeniz bu alım için yetersiz.', 'error');
+                return;
+            }
+
+            appState.accounts.tl.balance = Number((appState.accounts.tl.balance - totalTl).toFixed(2));
+            if (asset === 'gold') {
+                appState.accounts.gold.balance = Number((appState.accounts.gold.balance + qty).toFixed(2));
+            } else {
+                appState.accounts.usd.balance = Number((appState.accounts.usd.balance + qty).toFixed(2));
+            }
+
+            const assetLabel = asset === 'gold' ? `${qty} gr Altın Alışı` : `$${qty} USD Alışı`;
+            const newTx = {
+                id: 'ZRT-2026-' + Math.floor(1000000 + Math.random() * 9000000),
+                title: `Kıymetli Maden / Döviz - ${assetLabel}`,
+                category: 'Döviz / Altın İşlemi',
+                date: 'Az önce • Şimdi',
+                fullDate: getCurrentFormattedDate(),
+                amount: '-' + formatTRY(totalTl),
+                isPositive: false,
+                icon: 'fa-coins',
+                sender: appState.user.fullName.toUpperCase(),
+                senderIban: appState.accounts.tl.iban,
+                receiver: 'T.C. ZİRAAT BANKASI HAZİNE',
+                receiverIban: asset === 'gold' ? appState.accounts.gold.iban : appState.accounts.usd.iban,
+                desc: `${assetLabel} (Kur: ${formatTRY(rate)})`
+            };
+
+            appState.transactions.unshift(newTx);
+            persistAndSync();
+            switchTab('anasayfa');
+            showToast(`${assetLabel} başarıyla tamamlandı!`, 'success');
+            setTimeout(() => openReceiptModal(0), 250);
+        }
+
+        // DİJİTAL DEKONT MODALI İŞLEMLERİ
+        function openReceiptModal(index) {
+            activeReceiptIndex = index;
+            const tx = appState.transactions[index];
+            if (!tx) return;
+
+            document.getElementById('rec-badge').textContent = tx.category;
+            document.getElementById('rec-amount').textContent = tx.amount;
+            document.getElementById('rec-amount').className = tx.isPositive
+                ? 'font-display text-2xl font-extrabold text-emerald-600 pt-1'
+                : 'font-display text-2xl font-extrabold text-slate-900 pt-1';
+
+            document.getElementById('rec-date').textContent = tx.fullDate;
+            document.getElementById('rec-id').textContent = tx.id;
+            document.getElementById('rec-branch').textContent = appState.user.branch;
+            document.getElementById('rec-sender').textContent = tx.sender;
+            document.getElementById('rec-sender-iban').textContent = tx.senderIban;
+            document.getElementById('rec-receiver').textContent = tx.receiver;
+            document.getElementById('rec-receiver-iban').textContent = tx.receiverIban;
+            document.getElementById('rec-desc').textContent = tx.desc;
+            document.getElementById('rec-barcode-text').textContent = `DOGRULAMA: ${tx.id.replace(/-/g, '')}`;
+
+            // Satır içi düzenleyiciyi doldur ve gizle
+            document.getElementById('inline-rec-receiver').value = tx.receiver;
+            document.getElementById('inline-rec-amount').value = tx.amount;
+            document.getElementById('inline-rec-desc').value = tx.desc;
+            document.getElementById('receipt-inline-editor').classList.add('hidden');
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
+        function toggleReceiptEditMode() {
+            document.getElementById('receipt-inline-editor').classList.toggle('hidden');
+        }
+
+        function applyInlineReceiptEdit() {
+            const tx = appState.transactions[activeReceiptIndex];
+            if (!tx) return;
+
+            tx.receiver = document.getElementById('inline-rec-receiver').value.trim() || tx.receiver;
+            tx.amount = document.getElementById('inline-rec-amount').value.trim() || tx.amount;
+            tx.desc = document.getElementById('inline-rec-desc').value.trim() || tx.desc;
+            tx.isPositive = tx.amount.startsWith('+');
+            tx.title = `${tx.category} - ${tx.receiver}`;
+
+            persistAndSync();
+            openReceiptModal(activeReceiptIndex);
+            showToast('Dekont detayları canlı olarak güncellendi!', 'success');
+        }
+
+        // Gerçek Dekont Dosyası İndirme (.txt / Resmi Dekont Belgesi)
+        function downloadReceiptFile() {
+            const tx = appState.transactions[activeReceiptIndex];
+            const content = [
+                '====================================================',
+                '           T.C. ZİRAAT BANKASI A.Ş.                 ',
+                '           ELEKTRONİK İŞLEM DEKONTU                 ',
+                '====================================================',
+                `Sorgu / Dekont No : ${tx.id}`,
+                `Tarih / Saat      : ${tx.fullDate}`,
+                `Şube              : ${appState.user.branch}`,
+                '----------------------------------------------------',
+                `Gönderen          : ${tx.sender}`,
+                `Gönderen IBAN     : ${tx.senderIban}`,
+                `Alıcı / Kurum     : ${tx.receiver}`,
+                `Alıcı IBAN / No   : ${tx.receiverIban}`,
+                '----------------------------------------------------',
+                `İşlem Tutarı      : ${tx.amount}`,
+                `İşlem Masrafı     : ₺0,00`,
+                `Açıklama          : ${tx.desc}`,
+                '====================================================',
+                '5070 Sayılı Elektronik İmza Kanunu kapsamında üretilmiştir.'
+            ].join('\n');
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${tx.id}_Ziraat_Dekont.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`${tx.id} dekont dosyası indirildi!`, 'success');
+        }
+
+        function shareReceiptText() {
+            const tx = appState.transactions[activeReceiptIndex];
+            const shareStr = `T.C. Ziraat Bankası Dekontu | Sorgu No: ${tx.id} | Gönderen: ${tx.sender} | Alıcı: ${tx.receiver} | Tutar: ${tx.amount} | Tarih: ${tx.fullDate}`;
+            copyToClipboard(shareStr, 'Dekont özeti paylaşım için panoya kopyalandı!');
+        }
+
+        // Modallar (Bildirim, QR, Kart Şifresi)
+        function openNotifications() {
+            document.getElementById('notifications-modal').classList.remove('hidden');
+            document.getElementById('notif-badge').classList.add('hidden');
+        }
+        function closeNotifications() { document.getElementById('notifications-modal').classList.add('hidden'); }
+
+        function openQrModal() { document.getElementById('qr-modal').classList.remove('hidden'); }
+        function closeQrModal() { document.getElementById('qr-modal').classList.add('hidden'); }
+
+        function openPinModal() {
+            document.getElementById('new-card-pin').value = '';
+            document.getElementById('pin-modal').classList.remove('hidden');
+        }
+        function closePinModal() { document.getElementById('pin-modal').classList.add('hidden'); }
+        function saveCardPin() {
+            const pin = document.getElementById('new-card-pin').value;
+            if (pin.length !== 4 || isNaN(pin)) {
+                showToast('Lütfen 4 haneli rakam giriniz.', 'error');
+                return;
+            }
+            closePinModal();
+            showToast('Bankkart şifreniz başarıyla güncellendi!', 'success');
+        }
+
+        // Yardımcı Fonksiyonlar
+        function copyToClipboard(text, msg) {
+            const input = document.createElement('input');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(input);
+            showToast(msg, 'success');
+        }
+
+        function getCurrentFormattedDate() {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${pad(now.getDate())}.${pad(now.getMonth() + 1)}.${now.getFullYear()} - ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        }
+
+        function updateLiveClock() {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            document.getElementById('live-clock').textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            let icon = 'fa-circle-info text-ziraat-red';
+            if (type === 'success') icon = 'fa-circle-check text-emerald-400';
+            if (type === 'error') icon = 'fa-circle-exclamation text-amber-400';
+
+            toast.className = 'pointer-events-auto bg-neutral-900/95 backdrop-blur-md text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-xl border border-neutral-700 flex items-center gap-2.5 animate-fade-in';
+            toast.innerHTML = `<i class="fa-solid ${icon} text-sm shrink-0"></i><span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-6px)';
+                toast.style.transition = 'all 0.25s ease';
+                setTimeout(() => toast.remove(), 250);
+            }, 2800);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateLiveClock();
+            setInterval(updateLiveClock, 15000);
+            renderAllUI();
+        });
+    </script>
 </body>
 </html>
+```
